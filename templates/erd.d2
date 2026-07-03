@@ -1,0 +1,58 @@
+# erd.d2 - E-commerce schema (Entity-Relationship Diagram)
+# Demonstrates: shape: sql_table, constraint shorthand (PK/FK/UNQ),
+# column-to-column relationships, and multi-constraint arrays.
+# ELK layout routes connections precisely to the row.
+
+...@classes
+
+users: {
+  shape: sql_table
+  id: int { constraint: primary_key }
+  email: text { constraint: unique }
+  password_hash: text
+  name: text
+  created_at: timestamp
+}
+
+orders: {
+  shape: sql_table
+  id: int { constraint: primary_key }
+  user_id: int { constraint: foreign_key }
+  status: text
+  total_cents: int
+  placed_at: timestamp
+}
+
+products: {
+  shape: sql_table
+  id: int { constraint: primary_key }
+  sku: text { constraint: unique }
+  name: text
+  price_cents: int
+  inventory_count: int
+}
+
+line_items: {
+  shape: sql_table
+  id: int { constraint: primary_key }
+  order_id: int { constraint: foreign_key }
+  product_id: int { constraint: foreign_key }
+  quantity: int
+  unit_price_cents: int
+}
+
+addresses: {
+  shape: sql_table
+  id: int { constraint: [primary_key; unique] }
+  user_id: int { constraint: foreign_key }
+  line1: text
+  city: text
+  postal_code: text
+  country: text
+}
+
+# Relationships connect COLUMNS, not tables
+orders.user_id -> users.id
+line_items.order_id -> orders.id
+line_items.product_id -> products.id
+addresses.user_id -> users.id

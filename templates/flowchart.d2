@@ -1,0 +1,48 @@
+# flowchart.d2 - "Should I deploy on Friday?" decision tree
+# Demonstrates: diamond decision nodes, branching yes/no labels, terminal
+# outcomes, and right-direction reading for a horizontal flow.
+
+direction: right
+
+...@classes
+
+title: |md
+  # Should I deploy on Friday afternoon?
+| { near: top-center }
+
+start: Code is merged { class: terminal }
+
+friday: Is it Friday? { class: decision }
+afternoon: Is it after 3pm? { class: decision }
+risky: Does the change touch critical paths? { class: decision }
+tests: Are tests green on main? { class: decision }
+coverage: Is the change behind a flag? { class: decision }
+
+deploy: Ship it {
+  class: terminal
+  style: { fill: lightgreen }
+}
+wait: Wait until Monday {
+  class: terminal
+  style: { fill: lightyellow }
+}
+block: Do not deploy {
+  class: terminal
+  style: { fill: lightcoral }
+}
+
+start -> friday
+friday -> afternoon: yes
+friday -> tests: no
+
+afternoon -> risky: yes
+afternoon -> tests: no
+
+risky -> block: yes
+risky -> coverage: no
+
+coverage -> wait: yes
+coverage -> block: no
+
+tests -> block: no
+tests -> deploy: yes

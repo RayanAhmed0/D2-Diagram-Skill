@@ -1,0 +1,94 @@
+# uml_class.d2 - Vehicle hierarchy (inheritance, composition, multiplicity)
+# Demonstrates: shape: class, field/method detection, visibility (+ - \#),
+# inheritance (open triangle), composition (filled diamond), aggregation
+# (unfilled diamond), and multiplicity labels.
+
+direction: right
+
+Vehicle: {
+  shape: class
+  +vin: string
+  +make: string
+  +model: string
+  +year: int
+  \#mileage: int
+  -owner_id: int
+  +start(): void
+  +stop(): void
+  +service(): ServiceRecord
+}
+
+Engine: {
+  shape: class
+  +cylinders: int
+  +displacement_cc: int
+  +horsepower: int
+  +ignite(): void
+  +shutoff(): void
+}
+
+Wheel: {
+  shape: class
+  +diameter_in: int
+  +pressure_psi: float
+  +rotate(deg: float): void
+}
+
+Car: {
+  shape: class
+  +doors: int
+  +drive(): void
+}
+
+Truck: {
+  shape: class
+  +payload_lbs: int
+  +tow(lbs: int): void
+}
+
+Motorcycle: {
+  shape: class
+  +sidecar: bool
+  +lean(angle: float): void
+}
+
+ServiceRecord: {
+  shape: class
+  +date: timestamp
+  +odometer: int
+  +notes: text
+}
+
+# Inheritance: open triangle, UNFILLED, pointing at the superclass
+Car -> Vehicle: {
+  target-arrowhead.shape: triangle
+  target-arrowhead.style.filled: false
+}
+Truck -> Vehicle: {
+  target-arrowhead.shape: triangle
+  target-arrowhead.style.filled: false
+}
+Motorcycle -> Vehicle: {
+  target-arrowhead.shape: triangle
+  target-arrowhead.style.filled: false
+}
+
+# Composition: filled diamond on the OWNER side (Vehicle owns its Engine)
+Vehicle -- Engine: has {
+  source-arrowhead.shape: diamond
+  source-arrowhead.style.filled: true
+}
+
+# Aggregation: unfilled diamond (Vehicle has Wheels, but they can be swapped)
+Vehicle -- Wheel: rolls on {
+  source-arrowhead.shape: diamond
+  source-arrowhead.style.filled: false
+  source-arrowhead: 1
+  target-arrowhead: 4
+}
+
+# Association with multiplicity
+Vehicle -- ServiceRecord: maintains {
+  source-arrowhead: 1
+  target-arrowhead: 0..*
+}

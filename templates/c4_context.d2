@@ -1,0 +1,59 @@
+# c4_context.d2 - C4 Context diagram for a banking system
+# Demonstrates: C4 theme (303), c4-person shape, markdown labels with type
+# tags, the [Software System] / [Container] / [Component] conventions, and
+# edge labels in the C4 style (verb + \n[protocol]).
+# C4 = Context, Container, Component, Code (4 abstraction levels).
+
+vars: {
+  d2-config: {
+    theme-id: 303           # C4 theme
+    layout-engine: elk
+    pad: 60
+  }
+}
+
+title: |md
+  # Internet Banking System - Context
+| { near: top-center }
+
+customer: |md
+  ## Personal Banking Customer
+  [Person]
+
+  A customer of the bank, with personal bank accounts.
+| {
+  shape: c4-person
+}
+
+internet_banking: |md
+  ## Internet Banking System
+  [Software System]
+
+  Allows customers to view accounts and make payments online.
+| {
+  shape: rectangle
+  label.near: bottom-center
+}
+
+mainframe: |md
+  ## Mainframe Banking System
+  [Software System]
+
+  Stores all core banking data. The source of truth for accounts and balances.
+| {
+  shape: rectangle
+}
+
+email: |md
+  ## Email System
+  [Software System]
+
+  Sends transactional emails to customers.
+| {
+  shape: rectangle
+}
+
+customer -> internet_banking: "Views accounts, makes payments\n[HTTPS]"
+internet_banking -> mainframe: "Gets account info\n[XML/HTTPS]"
+internet_banking -> email: "Sends e-statements\n[SMTP]"
+email -> customer: "Sends emails to\n[SMTP]"

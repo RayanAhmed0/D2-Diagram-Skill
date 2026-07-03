@@ -1,0 +1,89 @@
+# classes.d2
+# Shared "CSS" for D2 diagrams in this project.
+# Spread-import from any other diagram with:  ...@classes
+# Then apply a class with:                    api.class: service
+#
+# Editing this file changes the look of every diagram that imports it.
+
+vars: {
+  d2-config: {
+    theme-id: 4           # Cool classics - modern, corporate-friendly
+    layout-engine: elk    # cleaner orthogonal routing than default dagre
+    pad: 60
+    # dark-theme-id intentionally omitted - only opt in if the user explicitly
+    # approves a dark variant for the diagram importing this file.
+  }
+}
+
+classes: {
+  # Primary backend service / API
+  service: {
+    style: {
+      border-radius: 8
+      stroke-width: 2
+      shadow: true
+    }
+  }
+
+  # Database (cylinder shape, distinct accent)
+  database: {
+    shape: cylinder
+    style: {
+      stroke-width: 2
+      shadow: true
+    }
+  }
+
+  # In-memory cache
+  cache: {
+    shape: cylinder
+    style: {
+      stroke-dash: 4
+    }
+  }
+
+  # Message queue / event bus
+  queue: {
+    shape: queue
+    style: {
+      stroke-width: 2
+    }
+  }
+
+  # External / third-party system (dashed border = outside trust boundary)
+  external: {
+    style: {
+      stroke-dash: 5
+      stroke-width: 2
+    }
+  }
+
+  # End-user actor
+  user: {
+    shape: person
+  }
+
+  # External system actor
+  actor: {
+    shape: person
+    style: {
+      stroke-dash: 5
+    }
+  }
+
+  # Decision point (flowcharts)
+  decision: {
+    shape: diamond
+    style: {
+      stroke-width: 2
+    }
+  }
+
+  # Initial / terminal state (state machines)
+  terminal: {
+    shape: circle
+    style: {
+      stroke-width: 3
+    }
+  }
+}

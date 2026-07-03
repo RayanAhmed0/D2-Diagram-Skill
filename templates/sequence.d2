@@ -1,0 +1,44 @@
+# sequence.d2 - OAuth 2.0 Authorization Code flow
+# Demonstrates: shape: sequence_diagram, dashed responses, groups, self-messages,
+# notes, and actor shaping. Source order is preserved top-to-bottom.
+
+shape: sequence_diagram
+
+# Predeclare actors so they appear left-to-right regardless of message order
+user: { shape: person }
+browser: Browser
+auth: Auth Server
+api: API
+
+# --- Happy path ---
+user -> browser: click "Sign in"
+browser -> auth: "GET /authorize\n[HTTPS]"
+
+is authenticated: {
+  auth -> auth: "validate session cookie"
+}
+
+auth <- browser: "redirect to login page\n[HTTPS]" {
+  style.stroke-dash: 5
+}
+
+user -> browser: enter credentials
+browser -> auth: "POST /login\n[HTTPS]"
+
+exchange: {
+  auth -> auth: "verify password (bcrypt)"
+  auth -> user: "prompt 2FA"
+  user -> auth: "submit TOTP code"
+}
+
+auth -> browser: "302 redirect with code\n[HTTPS]" {
+  style.stroke-dash: 5
+}
+browser -> api: "POST /token\n[code + verifier]"
+api -> auth: "exchange code for tokens\n[HTTPS]"
+api <- auth: "access + refresh tokens\n[JSON]" {
+  style.stroke-dash: 5
+}
+browser -> api: "GET /profile\n[Bearer token]"
+
+auth."Keep access token TTL short (15min). Rotate refresh token on every use."

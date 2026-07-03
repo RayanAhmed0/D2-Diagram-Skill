@@ -1,0 +1,76 @@
+# grid_matrix.d2 - Cloud provider comparison matrix
+# Demonstrates: grid-rows + grid-columns + grid-gap, dominant-direction fill
+# order (rows first because grid-rows is declared first), and the
+# invisible-padding trick for clean alignment.
+
+vars: {
+  d2-config: {
+    theme-id: 4
+    layout-engine: elk
+    pad: 60
+  }
+}
+
+direction: right
+
+grid-rows: 6
+grid-columns: 4
+grid-gap: 0
+
+classes: {
+  header: {
+    style: {
+      bold: true
+      fill: "#E5E7EB"
+      stroke-width: 0
+    }
+  }
+  cell: {
+    style: {
+      stroke-width: 1
+      fill: white
+    }
+  }
+  highlight: {
+    style: {
+      fill: "#DBEAFE"
+      stroke-width: 2
+    }
+  }
+}
+
+# Row 1 - headers
+Feature.class: header
+AWS.class: header
+Azure.class: header
+GCP.class: header
+
+# Row 2
+Compute: ""
+Lambda.class: cell
+Azure Functions.class: cell
+Cloud Functions.class: highlight
+
+# Row 3
+Storage: ""
+S3.class: cell
+Blob Storage.class: cell
+Cloud Storage.class: cell
+
+# Row 4
+Queue: ""
+SQS.class: cell
+Service Bus.class: cell
+Pub/Sub.class: cell
+
+# Row 5
+CDN: ""
+CloudFront.class: cell
+Azure CDN.class: cell
+Cloud CDN.class: cell
+
+# Row 6
+IAM: ""
+IAM.class: cell
+Azure AD.class: cell
+Cloud IAM.class: cell

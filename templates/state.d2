@@ -1,0 +1,46 @@
+# state.d2 - Order lifecycle state machine
+# Demonstrates: states as shapes, initial/final states, transition labels
+# (events), and the direction: right reading order typical of state diagrams.
+
+direction: right
+
+...@classes
+
+title: |md
+  # Order Lifecycle
+| { near: top-center }
+
+# Initial state - filled black circle
+start: "" {
+  shape: circle
+  style: { fill: black; stroke: black }
+}
+
+draft: Draft
+pending: Pending Payment
+paid: Paid
+fulfilled: Fulfilled
+shipped: Shipped
+delivered: Delivered
+
+# Final state (oval with double border = UML terminal)
+completed: "" {
+  shape: oval
+  style: { fill: black; stroke: black; double-border: true }
+}
+cancelled: Cancelled {
+  style: { stroke-dash: 4 }
+}
+
+start -> draft: customer begins checkout
+draft -> pending: submit order
+pending -> paid: payment captured
+pending -> cancelled: payment timeout
+paid -> fulfilled: warehouse picks
+fulfilled -> shipped: carrier picks up
+shipped -> delivered: customer signs
+delivered -> completed: 30-day window closes
+
+# Any active state can be cancelled by dispute
+paid -> cancelled: customer cancels
+fulfilled -> cancelled: fraud hold

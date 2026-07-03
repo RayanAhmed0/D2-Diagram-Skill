@@ -1,0 +1,73 @@
+# architecture.d2 - Generic 3-tier web service architecture
+# Demonstrates: containers, markdown labels, classes, bidirectional connections,
+# and the trust-boundary pattern (external services styled differently).
+#
+# To add icons, set `icon: <url>` on a shape. For local rendering that doesn't
+# hit the network, pass `--bundle=false` so d2 leaves URLs as references
+# instead of inlining them.
+
+direction: right
+
+...@classes
+
+title: |md
+  # Web Application Architecture
+| { near: top-center }
+
+# Users enter through the CDN
+user: Customer { class: user }
+
+# Edge / presentation tier
+edge: {
+  cdn: Cloudflare CDN { class: service }
+  web: Next.js Web App { class: service }
+}
+
+# Application tier
+application: {
+  label.near: top-center
+  api: API Gateway { class: service }
+  auth: Auth Service { class: service }
+  orders: Orders Service { class: service }
+}
+
+# Data tier
+data: {
+  label.near: top-center
+  pg: PostgreSQL Primary { class: database }
+  replica: Read Replica { class: database }
+  redis: Redis { class: cache }
+}
+
+# Async / event-driven side channel
+events: {
+  label.near: top-center
+  bus: Event Bus { class: queue }
+  worker: Background Worker { class: service }
+}
+
+# External dependencies (outside trust boundary)
+stripe: Stripe Payments { class: external }
+sendgrid: SendGrid Email { class: external }
+
+# Traffic flow
+user -> edge.cdn: "GET\n[HTTPS]"
+edge.cdn -> edge.web: "static assets"
+edge.web -> application.api: "REST\n[JSON/HTTPS]"
+
+application.api -> application.auth: "verify token"
+application.api -> application.orders: "route"
+
+application.orders -> data.redis: "cache lookup"
+application.orders -> data.pg: "read/write"
+data.pg <-> data.replica: "replicate"
+
+application.orders -> events.bus: "publish event"
+events.bus -> events.worker: "consume"
+
+# Outbound to third parties
+application.orders -> stripe: "charge card\n[HTTPS]"
+events.worker -> sendgrid: "send email\n[SMTP]"
+
+# Legend auto-populates from styles in use
+d2-legend: "" { near: bottom-right }
